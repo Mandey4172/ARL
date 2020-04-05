@@ -22,17 +22,6 @@ namespace Rumcajs
 			pinMode(_port, static_cast<uint8_t>(_mode));
 		}
 
-		//Pin(const Pin& pin) : _port(pin._port), _mode(pin._mode)
-		//{
-		//	pinMode(_port, static_cast<uint8_t>(_mode));
-		//}
-
-		//Pin& operator=(const Pin& other)
-		//{
-		//	if(this != &other)
-		//		*this = Pin(other);
-		//	return *this;
-		//}
 		const uint8_t portNumber()
 		{
 			return _port;
@@ -51,7 +40,6 @@ namespace Rumcajs
 	{
 	public:
 		OutputPin(uint8_t _port) : Pin(_port, PinMode::Output), _writeFunction(writeFunction) {}
-		//OutputPin(const OutputPin& pin) : Pin(pin), _writeFunction(pin._writeFunction) {}
 
 		OutputPin& operator=(const Pin& other)
 		{
@@ -77,14 +65,6 @@ namespace Rumcajs
 	{
 	public:
 		InputPin(uint8_t _port) : Pin(_port, PinMode::Input), _readFunction(readFunction) {}
-		//InputPin(const InputPin& pin) : Pin(pin), _readFunction(pin._readFunction) {}
-
-		//InputPin& operator=(const Pin& other)
-		//{
-		//	if (this != &other)
-		//		* this = InputPin(other);
-		//	return *this;
-		//}
 
 		uint8_t read()
 		{
