@@ -3,6 +3,9 @@
 
 #include <Arduino.h>
 #include <stdio.h>
+
+#include <src/Util.h>
+
 #include <src/Pin.h>
 #include <src/Display/Core/TDisplay.h>
 #include <src/Display/SegmentDisplay/TSegmentDisplay.h>
@@ -63,6 +66,7 @@ namespace ARL
 
 	class FourDigitSevenSegmentDisplay : public TMultiSegmentDisplay<4, 8>
 	{
+		static constexpr uint8_t _digitCount = 4;
 		static constexpr uint8_t _onState = _lowState;
 		static constexpr uint8_t _offState = _hightState;
 
@@ -112,6 +116,29 @@ namespace ARL
 				if (digit != -1)
 					displayDigit(i, digit);
 			}
+		}
+
+		void displayFloatNumber(float number, uint8_t dotPosition = 1)
+		{
+			const int max = pow(10, _digitCount - dotPosition) - 1;
+			if (number > 0 && number < max)
+			{
+				const int multiplier = pow(10, dotPosition);
+				const float multipliedNumber = number * multiplier;
+				const int reforgedNumber = floor(multipliedNumber);
+
+				clearDotState();
+				setDotState(dotPosition, true);
+				displayNumber(reforgedNumber);
+			}
+		}
+
+		void clearDotState()
+		{
+			constexpr uint8_t controlPinsCount = getDigitPinsCount();
+
+			for(uint8_t index = 0; index < controlPinsCount; index++)
+				setDotState(index, false);
 		}
 
 		void setDotState(uint8_t index, bool state)
@@ -188,10 +215,6 @@ namespace ARL
 
 		unsigned int stripDigit(unsigned int number, uint8_t digit)
 		{
-			/*constexpr uint8_t digitPinsCount = getDigitPinsCount();
-			if (digit > digitPinsCount)
-				digit = digitPinsCount;*/
-
 			digit = min(digit, getDigitPinsCount());
 
 			return performStripDigit(number, digit);
