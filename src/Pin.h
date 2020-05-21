@@ -1,9 +1,9 @@
-#ifndef Rumcajs_Pin_h
-#define Rumcajs_Pin_h
+#ifndef ARL_Pin_h
+#define ARL_Pin_h
 
 #include <Arduino.h>
 
-namespace Rumcajs
+namespace ARL
 {
 	enum class PinMode : uint8_t
 	{

@@ -1,10 +1,10 @@
-#ifndef Rumcajs_LED_h
-#define Rumcajs_LED_h
+#ifndef ARL_LED_h
+#define ARL_LED_h
 
 #include <Arduino.h>
 #include "Pin.h"
 
-namespace Rumcajs
+namespace ARL
 {
 
 	class TBaseLED

@@ -1,5 +1,5 @@
-#ifndef Rumcajs_RPin_h
-#define Rumcajs_RPin_h
+#ifndef ARL_RPin_h
+#define ARL_RPin_h
 
 #include "src/Pin.h"
 #include "src/LED.h"

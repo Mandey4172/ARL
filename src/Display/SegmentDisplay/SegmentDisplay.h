@@ -1,5 +1,5 @@
-#ifndef Rumcajs_SegmentDisplay_h
-#define Rumcajs_SegmentDisplay_h
+#ifndef ARL_SegmentDisplay_h
+#define ARL_SegmentDisplay_h
 
 #include <Arduino.h>
 #include <stdio.h>
@@ -7,7 +7,7 @@
 #include <src/Display/Core/TDisplay.h>
 #include <src/Display/SegmentDisplay/TSegmentDisplay.h>
 
-namespace Rumcajs
+namespace ARL
 {
 	class SevenSegmentDisplay : public TSegmentDisplay<7, 8>
 	{

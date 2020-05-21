@@ -1,7 +1,7 @@
-#ifndef Rumcajs_TSegmentDisplay_h
-#define Rumcajs_TSegmentDisplay_h
+#ifndef ARL_TSegmentDisplay_h
+#define ARL_TSegmentDisplay_h
 
-namespace Rumcajs
+namespace ARL
 {
 	template<const uint8_t segmentsCount, const uint8_t displayPinCount>
 	class TSegmentDisplay : public TDisplay<DigitalOutputPin, displayPinCount>
@@ -82,7 +82,6 @@ namespace Rumcajs
 			: TMultiSegmentDisplayBase<DigitalOutputPin, digitPinCount, segmentPinCount>(digitPins,segmentPins)
 		{}
 	};
-
 
 }
 
