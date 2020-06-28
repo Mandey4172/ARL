@@ -126,29 +126,6 @@ namespace ARL
 
 	protected:
 
-		/*void setActiveDigit(uint8_t index) override
-		{
-			cleanInputBuffer();
-			cleanDigitBuffer();
-
-			if (index <= getDigitPinsCount())
-				_digitPins[index].write(DisplayControlStates::_onState);
-
-			delay(2);
-		}
-
-		void setInputBuffer(uint8_t input) override
-		{
-			uint8_t mask = 0b00000001;
-
-			for (uint8_t i = 0; i < getInputPinsCount(); i++)
-			{
-				const uint8_t bitValue = (input & mask) >> i;
-				_inputPins[i].write(bitValue);
-				mask = mask << 1;
-			}
-		}*/
-
 		unsigned int stripDigit(unsigned int number, uint8_t digit)
 		{
 			digit = min(digit, getDigitPinsCount());

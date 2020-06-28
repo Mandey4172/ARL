@@ -45,20 +45,6 @@ namespace ARL
 	{
 	public:
 
-		//static constexpr uint8_t _lowState = LOW;
-		//static constexpr uint8_t _hightState = HIGH;
-		//static constexpr uint8_t _onState = _lowState;
-		//static constexpr uint8_t _offState = _hightState;
-
-	protected:
-
-		PinType* _inputPins;
-		PinType* _digitPins;
-
-		bool _dotStates[digitPinCount];
-
-	public:
-
 		TMultiSegmentDisplayBase(PinType digitPins[digitPinCount], PinType segmentPins[inputPinsCount]) : _digitPins(digitPins), _inputPins(segmentPins)
 		{
 			for (bool& state : _dotStates)
@@ -66,9 +52,6 @@ namespace ARL
 				state = false;
 			}
 		}
-
-		//virtual void setActiveDigit(uint8_t digit) = 0;
-		//virtual void setInputBuffer(uint8_t buffer) = 0;
 
 		static constexpr uint8_t getInputPinsCount()
 		{
@@ -119,6 +102,13 @@ namespace ARL
 			for (int i = 0; i < getDigitPinsCount(); i++)
 				_digitPins[i].write(DisplayControlStates::_offState);
 		}
+
+	protected:
+
+		PinType* _inputPins;
+		PinType* _digitPins;
+
+		bool _dotStates[digitPinCount];
 
 	};
 
