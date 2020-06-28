@@ -6,6 +6,13 @@
 
 namespace ARL
 {
+	class DisplayControlStates
+	{
+	public:
+		static constexpr uint8_t _onState = PinStates:: _lowState;
+		static constexpr uint8_t _offState = PinStates::_hightState;
+	};
+
 	template <typename PinType, const uint8_t pinCount>
 	class TDisplay
 	{
@@ -21,8 +28,6 @@ namespace ARL
 
 	protected:
 		PinType * _pins;
-		static constexpr uint8_t _lowState = LOW;
-		static constexpr uint8_t _hightState = HIGH;
 	};
 
 }

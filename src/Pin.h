@@ -11,6 +11,14 @@ namespace ARL
 		Output = OUTPUT,
 	};
 
+	class PinStates
+	{
+	public:
+
+		static constexpr uint8_t _lowState = LOW;
+		static constexpr uint8_t _hightState = HIGH;
+	};
+
 	/*
 	 *
 	 */

@@ -12,9 +12,6 @@ namespace ARL
 	public:
 		virtual void turnOn() = 0;
 		virtual void turnOff() = 0;
-	protected:
-		const uint8_t _lowState = LOW;
-		const uint8_t _hightState = HIGH;
 	};
 
 	template <class PinType = DigitalOutputPin>
@@ -25,12 +22,12 @@ namespace ARL
 
 		void turnOn() override
 		{
-			static_cast<DigitalOutputPin>(_pin).write(_hightState);
+			static_cast<DigitalOutputPin>(_pin).write(PinStates::_hightState);
 		}
 
 		void turnOff() override
 		{
-			static_cast<DigitalOutputPin>(_pin).write(_lowState);
+			static_cast<DigitalOutputPin>(_pin).write(PinStates::_lowState);
 		}
 
 	private:
@@ -54,7 +51,7 @@ namespace ARL
 		void turnOff() override
 		{
 			for (uint8_t i = 0; i < 3; i++)
-				static_cast<AnalogOutputPin>(_pins[i]).write(_lowState);
+				static_cast<AnalogOutputPin>(_pins[i]).write(PinStates::_lowState);
 		}
 
 		void setColor(uint8_t red, uint8_t green, uint8_t blue)

@@ -7,7 +7,6 @@
 #include <src/Util.h>
 
 #include <src/Pin.h>
-#include <src/Display/Core/TDisplay.h>
 #include <src/Display/SegmentDisplay/TSegmentDisplay.h>
 
 namespace ARL
@@ -37,10 +36,9 @@ namespace ARL
 		{
 			if (number < _symbolCount)
 			{
-				const uint8_t pinCount = getPinCount();
 				uint8_t mask = 0b00000001;
 
-				for (uint8_t i = 0; i < pinCount; i++)
+				for (uint8_t i = 0; i < getPinCount(); i++)
 				{
 					const uint8_t bitValue = (numberPinSetting[number] & mask) >> i;
 					_pins[i].write(bitValue);
@@ -67,8 +65,6 @@ namespace ARL
 	class FourDigitSevenSegmentDisplay : public TMultiSegmentDisplay<4, 8>
 	{
 		static constexpr uint8_t _digitCount = 4;
-		static constexpr uint8_t _onState = _lowState;
-		static constexpr uint8_t _offState = _hightState;
 
 		constexpr static uint8_t _symbolCount = 10;
 		uint8_t numberPinSetting[_symbolCount] = {
@@ -89,18 +85,13 @@ namespace ARL
 			: TMultiSegmentDisplay<4, 8>(controlPins, digitPins)
 		{}
 
-		void display(uint8_t digit, uint8_t input)
-		{
-			setActiveDigit(digit);
-			setSegmentBuffer(input);
-		}
 
 		void displayDigit(uint8_t digit, uint8_t input)
 		{
 			setActiveDigit(digit);
 			if (input < _symbolCount)
 			{
-				setSegmentBuffer(numberPinSetting[input]);
+				setInputBuffer(numberPinSetting[input]);
 				if(_dotStates[digit])
 					setDotBufferState(digit, true);
 			}
@@ -125,93 +116,38 @@ namespace ARL
 			{
 				const int multiplier = pow(10, dotPosition);
 				const float multipliedNumber = number * multiplier;
-				const int reforgedNumber = floor(multipliedNumber);
+				const int realNumber = floor(multipliedNumber);
 
 				clearDotState();
 				setDotState(dotPosition, true);
-				displayNumber(reforgedNumber);
-			}
-		}
-
-		void clearDotState()
-		{
-			constexpr uint8_t controlPinsCount = getDigitPinsCount();
-
-			for(uint8_t index = 0; index < controlPinsCount; index++)
-				setDotState(index, false);
-		}
-
-		void setDotState(uint8_t index, bool state)
-		{
-			constexpr uint8_t controlPinsCount = getDigitPinsCount();
-			if (index < controlPinsCount)
-				_dotStates[index] = state;
-		}
-
-		void setDotBufferState(uint8_t index, bool state)
-		{
-			constexpr uint8_t controlPinsCount = getDigitPinsCount();
-			constexpr uint8_t segmentPinCount = getSegmentPinsCount();
-			if (index < controlPinsCount)
-			{
-				if (state)
-				{
-					_segmentPins[segmentPinCount -1].write(_hightState);
-				}
-				else
-				{
-					_segmentPins[segmentPinCount - 1].write(_lowState);
-				}
+				displayNumber(realNumber);
 			}
 		}
 
 	protected:
 
-		void setActiveDigit(uint8_t index) override
+		/*void setActiveDigit(uint8_t index) override
 		{
-			constexpr uint8_t controlPinsCount = getDigitPinsCount();
-
-			cleanSegmentBuffer();
+			cleanInputBuffer();
 			cleanDigitBuffer();
 
-			if (index <= controlPinsCount)
-			{
-				_digitPins[index].write(_onState);
-			}
+			if (index <= getDigitPinsCount())
+				_digitPins[index].write(DisplayControlStates::_onState);
 
 			delay(2);
 		}
 
-		void setSegmentBuffer(uint8_t input) override
+		void setInputBuffer(uint8_t input) override
 		{
-			constexpr uint8_t segmentPinCount = getSegmentPinsCount();
 			uint8_t mask = 0b00000001;
 
-			for (uint8_t i = 0; i < segmentPinCount; i++)
+			for (uint8_t i = 0; i < getInputPinsCount(); i++)
 			{
 				const uint8_t bitValue = (input & mask) >> i;
-				_segmentPins[i].write(bitValue);
+				_inputPins[i].write(bitValue);
 				mask = mask << 1;
 			}
-		}
-
-		void cleanSegmentBuffer() 
-		{
-			constexpr uint8_t segmentPinCount = getSegmentPinsCount();
-
-			for (uint8_t i = 0; i < segmentPinCount; i++)
-			{
-				_segmentPins[i].write(_lowState);
-			}
-		}
-
-		void cleanDigitBuffer()
-		{
-			constexpr uint8_t controlPinsCount = getDigitPinsCount();
-
-			for (int i = 0; i < controlPinsCount; i++)
-				_digitPins[i].write(_offState);
-		}
+		}*/
 
 		unsigned int stripDigit(unsigned int number, uint8_t digit)
 		{
@@ -234,6 +170,24 @@ namespace ARL
 			return -1;
 		}
 
+	};
+
+	class BinaryFourDigitSevenSegmentDisplay : public TMultiSegmentDisplay<4, 4>
+	{
+	public:
+
+		constexpr static char _symbolCount = 10;
+		uint8_t numberPinSetting[_symbolCount] = {
+			0b0000,
+			0b0001,
+			0b0010,
+			0b0011,
+			0b0100,
+			0b0101,
+			0b0110,
+			0b0111,
+			0b1000,
+			0b1001 };
 	};
 }
 

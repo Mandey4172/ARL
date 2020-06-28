@@ -1,6 +1,8 @@
 #ifndef ARL_TSegmentDisplay_h
 #define ARL_TSegmentDisplay_h
 
+#include <src/Display/Core/TDisplay.h>
+
 namespace ARL
 {
 	template<const uint8_t segmentsCount, const uint8_t displayPinCount>
@@ -38,11 +40,26 @@ namespace ARL
 
 	};
 
-	template <typename PinType, const uint8_t digitPinCount, const uint8_t segmentPinCount>
+	template <typename PinType, const uint8_t digitPinCount, const uint8_t inputPinsCount>
 	class TMultiSegmentDisplayBase
 	{
 	public:
-		TMultiSegmentDisplayBase(PinType digitPins[digitPinCount], PinType segmentPins[segmentPinCount]) : _digitPins(digitPins), _segmentPins(segmentPins)
+
+		//static constexpr uint8_t _lowState = LOW;
+		//static constexpr uint8_t _hightState = HIGH;
+		//static constexpr uint8_t _onState = _lowState;
+		//static constexpr uint8_t _offState = _hightState;
+
+	protected:
+
+		PinType* _inputPins;
+		PinType* _digitPins;
+
+		bool _dotStates[digitPinCount];
+
+	public:
+
+		TMultiSegmentDisplayBase(PinType digitPins[digitPinCount], PinType segmentPins[inputPinsCount]) : _digitPins(digitPins), _inputPins(segmentPins)
 		{
 			for (bool& state : _dotStates)
 			{
@@ -50,9 +67,12 @@ namespace ARL
 			}
 		}
 
-		static constexpr uint8_t getSegmentPinsCount()
+		//virtual void setActiveDigit(uint8_t digit) = 0;
+		//virtual void setInputBuffer(uint8_t buffer) = 0;
+
+		static constexpr uint8_t getInputPinsCount()
 		{
-			return segmentPinCount;
+			return inputPinsCount;
 		}
 
 		static constexpr uint8_t getDigitPinsCount()
@@ -60,27 +80,80 @@ namespace ARL
 			return digitPinCount;
 		}
 
-		virtual void setActiveDigit(uint8_t digit) = 0;
-		virtual void setSegmentBuffer(uint8_t digit) = 0;
+		void clearDotState()
+		{
+			constexpr uint8_t controlPinsCount = getDigitPinsCount();
+
+			for (uint8_t index = 0; index < controlPinsCount; index++)
+				setDotState(index, false);
+		}
+
+		void setDotState(uint8_t index, bool state)
+		{
+			constexpr uint8_t controlPinsCount = getDigitPinsCount();
+			if (index < controlPinsCount)
+				_dotStates[index] = state;
+		}
+
+		void setDotBufferState(uint8_t index, bool state)
+		{
+			if (index < getInputPinsCount())
+			{
+				if (state)
+					_inputPins[getInputPinsCount() - 1].write(PinStates::_hightState);
+				else
+					_inputPins[getInputPinsCount() - 1].write(PinStates::_lowState);
+			}
+		}
 
 	protected:
 
-		PinType* _segmentPins;
-		PinType* _digitPins;
+		void cleanInputBuffer()
+		{
+			for (uint8_t i = 0; i < getInputPinsCount(); i++)
+				_inputPins[i].write(PinStates::_lowState);
+		}
 
-		bool _dotStates[digitPinCount];
+		void cleanDigitBuffer()
+		{
+			for (int i = 0; i < getDigitPinsCount(); i++)
+				_digitPins[i].write(DisplayControlStates::_offState);
+		}
 
-		static constexpr uint8_t _lowState = LOW;
-		static constexpr uint8_t _hightState = HIGH;
 	};
 
-	template <const uint8_t digitPinCount, const uint8_t segmentPinCount>
-	class TMultiSegmentDisplay : public TMultiSegmentDisplayBase<DigitalOutputPin, digitPinCount, segmentPinCount>
+	template <const uint8_t digitPinCount, const uint8_t inputPinsCount>
+	class TMultiSegmentDisplay : public TMultiSegmentDisplayBase<DigitalOutputPin, digitPinCount, inputPinsCount>
 	{
 	public:
-		TMultiSegmentDisplay(DigitalOutputPin digitPins[digitPinCount], DigitalOutputPin segmentPins[segmentPinCount]) 
-			: TMultiSegmentDisplayBase<DigitalOutputPin, digitPinCount, segmentPinCount>(digitPins,segmentPins)
+		TMultiSegmentDisplay(DigitalOutputPin digitPins[digitPinCount], DigitalOutputPin segmentPins[inputPinsCount])
+			: TMultiSegmentDisplayBase<DigitalOutputPin, digitPinCount, inputPinsCount>(digitPins, segmentPins)
 		{}
+
+	protected:
+
+		void setActiveDigit(uint8_t index)
+		{
+			this->cleanInputBuffer();										  // won't compile if witout this (Arduino 1.8.10)		
+			this->cleanDigitBuffer();
+
+			if (index <= this->getDigitPinsCount())
+				this->_digitPins[index].write(DisplayControlStates::_onState);
+
+			delay(2);
+		}
+
+		void setInputBuffer(uint8_t input)
+		{
+			uint8_t mask = 0b00000001;
+
+			for (uint8_t i = 0; i < this->getInputPinsCount(); i++)
+			{
+				const uint8_t bitValue = (input & mask) >> i;
+				this->_inputPins[i].write(bitValue);
+				mask = mask << 1;
+			}
+		}
 	};
 
 }
