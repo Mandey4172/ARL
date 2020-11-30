@@ -45,7 +45,7 @@ namespace ARL
 	{
 	public:
 
-		TMultiSegmentDisplayBase(PinType digitPins[digitPinCount], PinType segmentPins[inputPinsCount]) : _digitPins(digitPins), _inputPins(segmentPins)
+		TMultiSegmentDisplayBase(PinType digitPins[digitPinCount], PinType inputPins[inputPinsCount]) : _digitPins(digitPins), _inputPins(inputPins)
 		{
 			for (bool& state : _dotStates)
 			{
@@ -116,8 +116,8 @@ namespace ARL
 	class TMultiSegmentDisplay : public TMultiSegmentDisplayBase<DigitalOutputPin, digitPinCount, inputPinsCount>
 	{
 	public:
-		TMultiSegmentDisplay(DigitalOutputPin digitPins[digitPinCount], DigitalOutputPin segmentPins[inputPinsCount])
-			: TMultiSegmentDisplayBase<DigitalOutputPin, digitPinCount, inputPinsCount>(digitPins, segmentPins)
+		TMultiSegmentDisplay(DigitalOutputPin digitPins[digitPinCount], DigitalOutputPin inputPins[inputPinsCount])
+			: TMultiSegmentDisplayBase<DigitalOutputPin, digitPinCount, inputPinsCount>(digitPins, inputPins)
 		{}
 
 	protected:

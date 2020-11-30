@@ -81,8 +81,8 @@ namespace ARL
 
 	public:
 
-		FourDigitSevenSegmentDisplay(DigitalOutputPin controlPins[4], DigitalOutputPin digitPins[8])
-			: TMultiSegmentDisplay<4, 8>(controlPins, digitPins)
+		FourDigitSevenSegmentDisplay(DigitalOutputPin controlPins[4], DigitalOutputPin inputPins[8])
+			: TMultiSegmentDisplay<4, 8>(controlPins, inputPins)
 		{}
 
 
@@ -149,7 +149,7 @@ namespace ARL
 
 	};
 
-	class BinaryFourDigitSevenSegmentDisplay : public TMultiSegmentDisplay<4, 4>
+	class BinaryFourDigitSevenSegmentDisplay : public TMultiSegmentDisplay<4, 5>
 	{
 	public:
 
@@ -165,6 +165,23 @@ namespace ARL
 			0b0111,
 			0b1000,
 			0b1001 };
+
+		BinaryFourDigitSevenSegmentDisplay(DigitalOutputPin controlPins[4], DigitalOutputPin inputPins[5])
+			: TMultiSegmentDisplay<4, 5>(controlPins, inputPins)
+		{}
+
+
+		void displayDigit(uint8_t digit, uint8_t input)
+		{
+			setActiveDigit(digit);
+			if (input < _symbolCount)
+			{
+				setInputBuffer(numberPinSetting[input]);
+				if (_dotStates[digit])
+					setDotBufferState(digit, true);
+			}
+			delay(2);
+		}
 	};
 }
 
